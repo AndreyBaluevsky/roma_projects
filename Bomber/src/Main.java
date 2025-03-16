@@ -1,4 +1,4 @@
-public class Main_2024_12_15 {
+public class Main {
 
 
     private static class Gr2024_12_15 extends Graphics {

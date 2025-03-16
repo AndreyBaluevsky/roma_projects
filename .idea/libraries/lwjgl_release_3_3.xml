@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lwjgl-release-3.3">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../lwjgl-release-3.3.0-custom" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../lwjgl-release-3.3.0-custom" recursive="false" />
+  </library>
+</component>
