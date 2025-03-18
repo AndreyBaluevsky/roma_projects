@@ -1,41 +1,106 @@
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class GameBoard
 implements IDrawable {
-    public final int cellRows, cellColumns;
+    private final int cellRows, cellColumns;
     private float cellWidth, cellHeight;
     private float cellOffsetX, cellOffsetY;
-    private Cell m_Cells[][];
+    private Cell[][] m_Cells;
 
-    public Cell defaultCell = new EmptyCell();
+    private Cell defaultCell = new EmptyCell();
 
     public GameBoard(int cellRows, int cellColumns) {
-        final float GBW = 0.85f, GBH=0.85f;
-        this.m_Cells = new Cell[cellRows][cellColumns];
         this.cellRows = cellRows;
         this.cellColumns = cellColumns;
+        initGBSize();
+        putDemoGameboardItems();
+
+    }
+
+    private void initGBSize() {
+        final float GBW = 0.85f, GBH=0.85f;
+        this.m_Cells = new Cell[cellRows][cellColumns];
         cellWidth  = GBW/cellColumns;
         cellHeight = GBH/cellRows;
         cellHeight = cellWidth = Math.min(cellWidth, cellHeight);
         cellOffsetX = (1.0f-cellWidth*cellColumns)*0.5f;
         cellOffsetY = (1.0f-cellHeight*cellRows)*0.5f;
         putWallBorders();
+    }
 
+    public GameBoard(String filePath) throws Exception {
+        final Element docElem = loadXml(filePath);
+        this.cellRows       = Integer.parseInt( docElem.getAttribute("Rows"));
+        this.cellColumns    = Integer.parseInt( docElem.getAttribute("Cols"));
+        initGBSize();
+        loadFromXml(docElem);
+    }
+
+    private void loadFromXml(Element docElem) {
+        NodeList nList = docElem.getElementsByTagName("WallH");
+        for (int i=0; i < nList.getLength(); i++) {
+            final Node nWH = nList.item(i);
+            final Element lmWH = (Element) nWH;
+            final int x = Integer.parseInt(lmWH.getAttribute("StartX"));
+            final int y = Integer.parseInt(lmWH.getAttribute("StartY"));
+            final int k = Integer.parseInt(lmWH.getAttribute("Count"));
+            putWallH(x, y, k);
+        }
+        nList = docElem.getElementsByTagName("WallV");
+        for (int i=0; i < nList.getLength(); i++) {
+            final Node nWH = nList.item(i);
+            final Element lmWH = (Element) nWH;
+            final int x = Integer.parseInt(lmWH.getAttribute("StartX"));
+            final int y = Integer.parseInt(lmWH.getAttribute("StartY"));
+            final int k = Integer.parseInt(lmWH.getAttribute("Count"));
+            putWallV(x, y, k);
+        }
+        NodeList nListZigZag = docElem.getElementsByTagName("WallZigZag");
+        for (int i=0; i < nListZigZag.getLength(); i++) {
+            final Node nWZ = nListZigZag.item(i);
+            final Element lmWZ = (Element) nWZ;
+            final NodeList nlPoints = lmWZ.getElementsByTagName("Point");
+            final int cntZigZag = nlPoints.getLength();
+            final Point[] pointsXY = new Point[cntZigZag];
+            for(int j = 0; j < cntZigZag; j++) {
+                Element lmPoint = (Element) nlPoints.item(j);
+                final int pX = Integer.parseInt(lmPoint.getAttribute("X"));
+                final int pY = Integer.parseInt(lmPoint.getAttribute("Y"));
+                pointsXY[j] = new Point(pX, pY);
+            }
+            putWallZigZag(pointsXY);
+        }
+    }
+
+    private Element loadXml(String filePath) throws ParserConfigurationException, SAXException, IOException {
+        File fXmlFile = new File(filePath);
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(fXmlFile);
+        final Element docElem = doc.getDocumentElement();
+        docElem.normalize();
+        return docElem;
+    }
+
+
+    private void putDemoGameboardItems() {
         putWallH(2, 2, 1);
         putWallH(4, 3, 2);
         putWallH(3, 5, 3);
-
         putBrickcellWallH (6, 7, 5);
-
-
-
     }
 
     private BrickCell[] putBrickcellWallH(int x, int y, int k) {
@@ -52,25 +117,7 @@ implements IDrawable {
         return new BrickCell[]{StartCell};
     }
 
-    public GameBoard(String filePath) throws Exception {
-        File fXmlFile = new File( filePath );
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(fXmlFile);
-        doc.getDocumentElement().normalize();
-        final float GBW = 0.85f, GBH=0.85f;
-        this.cellRows = Integer.parseInt( doc.getDocumentElement().getAttribute("Rows"));
-        this.cellColumns = Integer.parseInt( doc.getDocumentElement().getAttribute("Cols"));
-        this.m_Cells = new Cell[cellRows][cellColumns];
-        cellWidth  = GBW/cellColumns;
-        cellHeight = GBH/cellRows;
-        cellHeight = cellWidth = Math.min(cellWidth, cellHeight);
-        cellOffsetX = (1.0f-cellWidth*cellColumns)*0.5f;
-        cellOffsetY = (1.0f-cellHeight*cellRows)*0.5f;
-        putWallBorders();
 
-
-    }
 
     public WallCell[] putWallZigZag(Point[] pointsXY) {
         Point p1 = pointsXY[0];

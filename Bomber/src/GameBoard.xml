@@ -1,1 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?><GameBoard Rows="20" Cols="20">    <WallH StartX="2" StartY="2" Count="1" />    <WallH StartX="4" StartY="4" Count="4" />    <WallV StartX="8" StartY="5" Count="5" />    <WallZigZag>        <Point X="2" Y="2" />        <Point X="2" Y="5" />        <Point X="4" Y="5" />        <Point X="4" Y="7" />    </WallZigZag></GameBoard>

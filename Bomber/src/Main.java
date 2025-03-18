@@ -6,19 +6,19 @@ public class Main {
         public GameBoard gb = createGameBoard();
 
         private GameBoard createGameBoard() {
-            final GameBoard gameBoard = new GameBoard(20, 20);
+            //final GameBoard gameBoard = new GameBoard(20, 20);
 
-            /*
+
             GameBoard gameBoard;
             try {
-                gameBoard = new GameBoard("C:\\Users\\Ромчик\\Desktop\\GameBoard.xml");
+                gameBoard = new GameBoard("Bomber\\res\\GameBoard.xml");
 
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
                 gameBoard = null;
             }
-             */
+
 
             return gameBoard;
 

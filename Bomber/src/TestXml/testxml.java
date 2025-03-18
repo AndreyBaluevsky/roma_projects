@@ -1,4 +1,4 @@
-package Main;
+package TestXml;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +16,7 @@ public class testxml {
 
         System.out.println("Test XML");
 
-        File fXmlFile = new File("C:\\Users\\Ромчик\\Desktop\\GameBoard.xml");
+        File fXmlFile = new File("Bomber\\res\\GameBoard.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
@@ -26,7 +26,6 @@ public class testxml {
         System.out.println("ROOT: " + doc.getDocumentElement().getNodeName());
 
         NodeList nList = doc.getElementsByTagName("WallH");
-
         for (int i=0; i < nList.getLength(); i++) {
             Node nWH = nList.item(i);
             Element lmWH = (Element) nWH;
