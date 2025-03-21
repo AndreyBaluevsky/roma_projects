@@ -100,32 +100,27 @@ public class Graphics {
         }
     }
 
-    public static void drawGrid(int N, int M, float W, float H) {
+    public static void drawBitmap(double px, double ph, Color[][] bmp) {
+        int M = bmp.length, N = bmp[0].length;
         glPushMatrix();
-        glTranslatef(-1, -1, 0);
-        glScalef(2, 2, 1);
-        //glRotatef(270,0,0, 1);
+        //glTranslatef(1, 1, 0);
+        //glScalef(2, 2, 1);
+        //glRotatef(180,0,0, 1); //
         glBegin(GL_QUADS);
         //glLineWidth(2.0f);
-        float clrR = (float) Math.random();
-        float clrG0 = (float) Math.random();
-        float clrB = (float) Math.random();
-        float dR = Math.max(0,(float) ((0.98-clrR)/M));
-        float dG = Math.max(0,(float) ((0.98-clrG0)/N));
-        float y1 = 0f;
+        double y1 = 0;
         for (int i=0; i<M; i++) {
-            float y2 = y1+H;
-            float x1 = 0f;
-            float clrG = clrG0;
+            double y2 =y1 + ph;
+            double x1 = 0;
+            final Color[] curRow = bmp[i];
             for (int j=0; j<N; j++) {
-                float x2 = x1+W;
-                glColor3f(clrR, clrG, clrB);
-                putRect(x1, y1, x2, y2);
+                double x2 = x1+px;
+                Color pix = curRow[j];
+                glColor3f(pix.getRed()/255f, pix.getGreen()/255f, pix.getBlue()/255f);
+                putRect((float)x1, (float)y1, (float)x2,  (float)y2);
                 x1 = x2;
-                clrG+=dG;
             }
             y1 = y2;
-            clrR+=dR;
         }
         glEnd();
         glPopMatrix();
@@ -139,7 +134,7 @@ public class Graphics {
     }
 
     public static void putColor(Color clr) {
-        glColor3f(clr.getRed() / 256f, clr.getGreen() / 256f, clr.getBlue() / 256f);
+        glColor3f(clr.getRed() / 255f, clr.getGreen() / 255f, clr.getBlue() / 255f);
     }
 
 

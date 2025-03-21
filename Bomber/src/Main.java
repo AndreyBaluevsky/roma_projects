@@ -6,7 +6,7 @@ public class Main {
         public GameBoard gb = createGameBoard();
 
         private GameBoard createGameBoard() {
-            //final GameBoard gameBoard = new GameBoard(20, 20);
+//            final GameBoard gameBoard = new GameBoard(20, 20);
 
 
             GameBoard gameBoard;
