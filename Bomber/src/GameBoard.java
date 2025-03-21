@@ -83,6 +83,16 @@ implements IDrawable {
             }
             putWallZigZag(pointsXY);
         }
+        NodeList nListBmp = docElem.getElementsByTagName("Bitmap");
+        for(int j = 0; j < nListBmp.getLength(); j++) {
+            final Node nBmp = nListBmp.item(j);
+            final Element lmBmp = (Element) nBmp;
+            final int x = Integer.parseInt(lmBmp.getAttribute("X"));
+            final int y = Integer.parseInt(lmBmp.getAttribute("Y"));
+            final String id = lmBmp.getAttribute("Id");
+            setCellsXY(x, y, new BitmapCell(id));
+        }
+
     }
 
     private Element loadXml(String filePath) throws ParserConfigurationException, SAXException, IOException {
@@ -101,7 +111,9 @@ implements IDrawable {
         putWallH(4, 3, 2);
         putWallH(3, 5, 3);
         putBrickcellWallH (6, 7, 5);
+        setCellsXY(8, 4, new BitmapCell("pic_v3"));
     }
+
 
     private BrickCell[] putBrickcellWallH(int x, int y, int k) {
         BrickCell StartCell = new BrickCell();

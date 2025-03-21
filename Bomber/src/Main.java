@@ -1,12 +1,12 @@
 public class Main {
 
 
-    private static class Gr2024_12_15 extends Graphics {
+    private static class GameRunner extends Graphics {
 
         public GameBoard gb = createGameBoard();
 
         private GameBoard createGameBoard() {
-            //final GameBoard gameBoard = new GameBoard(20, 20);
+//            final GameBoard gameBoard = new GameBoard(20, 20);
 
 
             GameBoard gameBoard;
@@ -26,7 +26,7 @@ public class Main {
 
         }
 
-        public Gr2024_12_15(String title) { super(title); }
+        public GameRunner(String title) { super(title); }
 
         @Override
         public void drawFrame() {
@@ -37,7 +37,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Gr2024_12_15("Проект 15.12.2024").run(Graphics.RunMode.FRAME_LOOP);
+        new GameRunner("Bomber").run(Graphics.RunMode.FRAME_LOOP);
     }
 
     //
