@@ -35,7 +35,31 @@ public class Main {
 
         @Override
         protected void beforeRun() {
-            testKeys();
+            activateKeyHandler();
+        }
+        private void activateKeyHandler() {
+            keyCallback = new GLFWKeyCallback() {
+                @Override
+                public void invoke(long window, int key, int scancode, int action, int mods) {
+                    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+                        switch (key) {
+                            case GLFW_KEY_UP:
+                                bomber.moveRel(0, 1);
+                                break;
+                            case GLFW_KEY_DOWN:
+                                bomber.moveRel(0, -1);
+                                break;
+                            case GLFW_KEY_LEFT:
+                                bomber.moveRel(-1, 0);
+                                break;
+                            case GLFW_KEY_RIGHT:
+                                bomber.moveRel(1, 0);
+                                break;
+                        }
+                    }
+                }
+            };
+            glfwSetKeyCallback(window, keyCallback);
         }
 
         private void testKeys() {
