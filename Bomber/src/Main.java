@@ -1,29 +1,26 @@
+import org.lwjgl.glfw.GLFWKeyCallback;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+
 public class Main {
 
 
     private static class GameRunner extends Graphics {
+        GameCharacter.Bomber bomber;
 
         public GameBoard gb = createGameBoard();
 
         private GameBoard createGameBoard() {
 //            final GameBoard gameBoard = new GameBoard(20, 20);
-
-
-            GameBoard gameBoard;
+            GameBoard gameBoard = null;
             try {
                 gameBoard = new GameBoard("Bomber\\res\\GameBoard.xml");
-
+                bomber = new GameCharacter.Bomber(gameBoard, 3, 6);
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
-                gameBoard = null;
             }
-
-
             return gameBoard;
-
-
-
         }
 
         public GameRunner(String title) { super(title); }
@@ -34,6 +31,53 @@ public class Main {
             gb.draw(this);
         }
 
+        private GLFWKeyCallback keyCallback;
+
+        @Override
+        protected void beforeRun() {
+            testKeys();
+        }
+
+        private void testKeys() {
+            keyCallback = new GLFWKeyCallback() {
+                @Override
+                public void invoke(long window, int key, int scancode, int action, int mods) {
+                    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+                        switch (key) {
+                            case GLFW_KEY_UP:
+                                System.out.println("UP");
+                                break;
+                            case GLFW_KEY_DOWN:
+                                System.out.println("DOWN");
+                                break;
+                            case GLFW_KEY_LEFT:
+                                System.out.println("LEFT");
+                                break;
+                            case GLFW_KEY_RIGHT:
+                                System.out.println("RIGHT");
+                                break;
+                        }
+                    }
+                }
+            };
+            glfwSetKeyCallback(window, keyCallback);
+        }
+
+        /* // Образец смены и отключения keyCallback.
+           // Вручную отключать НЕ НАДО!
+        @Override
+        protected void afterRun() {
+            GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
+                @Override
+                public void invoke(long window, int key, int scancode, int action, int mods) {
+                    // Key handling logic
+                }
+            };
+            glfwSetKeyCallback(window, keyCallback);
+            // To explicitly clean up the callback (optional)
+            keyCallback.close();
+        }
+        */
     }
 
     public static void main(String[] args) {

@@ -16,6 +16,14 @@ import static org.lwjgl.opengl.GL11.*;
 public class GameBoard
 implements IDrawable {
     private final int cellRows, cellColumns;
+    public int getCellRows() {
+        return cellRows;
+    }
+
+    public int getCellColumns() {
+        return cellColumns;
+    }
+
     private float cellWidth, cellHeight;
     private float cellOffsetX, cellOffsetY;
     private Cell[][] m_Cells;

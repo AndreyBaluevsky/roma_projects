@@ -16,19 +16,22 @@ public class Graphics {
         FRAME_LOOP
     }
 
-    private long window;
-    private int windowWidth = 800;  // Default width
-    private int windowHeight = 600; // Default height
-    private String title;
+    protected long window;
+    protected int windowWidth = 800;  // Default width
+    protected int windowHeight = 600; // Default height
+    protected String title;
     public Graphics(String title) {
         this.title = title;
     }
 
+    protected void beforeRun() { }
+    protected void afterRun()  { }
 
     public void run(RunMode runMode) {
         System.out.println("Запуск LWJGL " + Version.getVersion() + "!");
 
         init();
+        beforeRun();
         switch (runMode) {
             case SINGLE_FRAME:
                 runSingleFrame();
@@ -37,6 +40,7 @@ public class Graphics {
                 runFrameLoop();
                 break;
         }
+        afterRun();
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
