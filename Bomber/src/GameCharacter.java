@@ -5,17 +5,30 @@ public class GameCharacter {
 
     public GameCharacter(GameBoard gb, int X, int Y, String bmpId) throws Exception {
         this.parentGameBoard = gb;
+        this.X = X;
+        this.Y = Y;
         cell = gb.setCellsXY(X, Y, new BitmapCell(bmpId));
-        if(moveTo(X,Y)==false) throw new Exception("Персонаж вне игрового поля!");
+        //if(moveTo(X,Y)==false) throw new Exception("Персонаж вне игрового поля!");
     }
 
     public boolean moveTo(int newX, int newY) {
-        if( newY>=1 && newY<parentGameBoard.getCellRows()-1 &&
-            newX>=1 && newX<parentGameBoard.getCellColumns()-1) {
-            parentGameBoard.setCellsXY(X, Y,null);
-            X = newX; Y = newY;
-            parentGameBoard.setCellsXY(X, Y, cell);
-            return  true;
+        boolean bAboveLowerBound = newY >= 0;
+        boolean bBelowUpperBound = newY < parentGameBoard.getCellRows() - 1;
+        boolean bRightToLeftBorder = newX >= 1;
+        boolean bLeftToRightBorder = newX < parentGameBoard.getCellColumns() - 1;
+
+        boolean bInsideGameBoard = bAboveLowerBound && bBelowUpperBound &&
+                bRightToLeftBorder && bLeftToRightBorder;
+
+        if(bInsideGameBoard) {
+            Cell cl = parentGameBoard.getCellsXY(newX, newY);
+            boolean EmptyCell = cl == null || cl instanceof EmptyCell;
+            if(EmptyCell) {
+                parentGameBoard.setCellsXY(X, Y,null);
+                X = newX; Y = newY;
+                parentGameBoard.setCellsXY(X, Y, cell);
+                return  true;
+            }
         }
         return  false;
     }
@@ -26,7 +39,17 @@ public class GameCharacter {
 
     public static class Bomber extends GameCharacter {
         public Bomber(GameBoard gb, int X, int Y) throws Exception {
-            super(gb, X, Y, "pic_v3");
+            super(gb, X, Y, "bomber");
+        }
+    }
+    public static class Robot1 extends GameCharacter {
+        public Robot1(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot1");
+        }
+    }
+    public static class Robot2 extends GameCharacter {
+        public Robot2(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot2");
         }
     }
 }

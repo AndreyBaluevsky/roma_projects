@@ -9,13 +9,16 @@ public class Main {
         GameCharacter.Bomber bomber;
 
         public GameBoard gb = createGameBoard();
-
+        public GameCharacter.Robot1 rbt1;
+        public GameCharacter.Robot2 rbt2;
         private GameBoard createGameBoard() {
 //            final GameBoard gameBoard = new GameBoard(20, 20);
             GameBoard gameBoard = null;
             try {
                 gameBoard = new GameBoard("Bomber\\res\\GameBoard.xml");
-                bomber = new GameCharacter.Bomber(gameBoard, 3, 6);
+                bomber = new GameCharacter.Bomber(gameBoard, 1, 1);
+                rbt1 = new GameCharacter.Robot1(gameBoard, 10, 10);
+                rbt2 = new GameCharacter.Robot2(gameBoard, 7, 8);
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
@@ -25,9 +28,27 @@ public class Main {
 
         public GameRunner(String title) { super(title); }
 
+        public int dx = 5, dy = -1;
+        public int frameRateRel = 8;
+        public int frameRateRelCur = 0;
+
         @Override
         public void drawFrame() {
             //drawGrid(5, 5, 0.1f, 0.1f);
+            if(frameRateRelCur>= frameRateRel) {
+                if (dx <= 0) {
+                    dy = 1;
+                } else if (dx >= 5) {
+                    dy = -1;
+                }
+                rbt1.moveRel(0, dy);
+                rbt2.moveRel(dy, 0);
+                dx += dy;
+                frameRateRelCur = 0;
+            } else {
+                frameRateRelCur ++;
+            }
+
             gb.draw(this);
         }
 
@@ -43,18 +64,20 @@ public class Main {
                 public void invoke(long window, int key, int scancode, int action, int mods) {
                     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
                         switch (key) {
-                            case GLFW_KEY_UP:
+                            case GLFW_KEY_UP: case GLFW_KEY_W:
                                 bomber.moveRel(0, 1);
                                 break;
-                            case GLFW_KEY_DOWN:
+                            case GLFW_KEY_DOWN: case GLFW_KEY_S:
                                 bomber.moveRel(0, -1);
                                 break;
-                            case GLFW_KEY_LEFT:
+                            case GLFW_KEY_LEFT: case GLFW_KEY_A:
                                 bomber.moveRel(-1, 0);
                                 break;
-                            case GLFW_KEY_RIGHT:
+                            case GLFW_KEY_RIGHT: case GLFW_KEY_D:
                                 bomber.moveRel(1, 0);
                                 break;
+                            default:
+                                System.out.println("PRESS key: "+key+" scancode: "+scancode);
                         }
                     }
                 }
