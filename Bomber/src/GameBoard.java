@@ -307,7 +307,7 @@ implements IDrawable {
         return setCellsRC(cellRows-Y-1, cellColumns-X-1, newCell);
     }
     public Cell getCellsXY(int X, int Y) { // 1-based, B-L -> T-R
-        return getCellsRC(Y-1,X-1);
+        return getCellsRC(cellRows-Y-1,cellColumns-X-1);
     }
 
     @Override
