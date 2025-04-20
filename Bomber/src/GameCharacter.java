@@ -11,6 +11,8 @@ public class GameCharacter {
         //if(moveTo(X,Y)==false) throw new Exception("Персонаж вне игрового поля!");
     }
 
+
+
     public boolean moveTo(int newX, int newY) {
         boolean bAboveLowerBound = newY >= 0;
         boolean bBelowUpperBound = newY < parentGameBoard.getCellRows() - 1;
@@ -21,8 +23,7 @@ public class GameCharacter {
                 bRightToLeftBorder && bLeftToRightBorder;
 
         if(bInsideGameBoard) {
-            Cell cl = parentGameBoard.getCellsXY(newX, newY);
-            boolean EmptyCell = cl == null || cl instanceof EmptyCell;
+            boolean EmptyCell = isEmptyCell(newX, newY);
             if(EmptyCell) {
                 parentGameBoard.setCellsXY(X, Y,null);
                 X = newX; Y = newY;
@@ -31,6 +32,11 @@ public class GameCharacter {
             }
         }
         return  false;
+    }
+
+    private boolean isEmptyCell(int newX, int newY) {
+        final Cell cl = parentGameBoard.getCellsXY(newX, newY);
+        return cl == null || cl instanceof EmptyCell;
     }
 
     public boolean moveRel(int newX, int newY) {
