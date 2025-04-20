@@ -18,6 +18,17 @@ public class RobotProgram {
             return this;
         }
 
+        public алг кмд(RobotProgramBlock.MotionCommand cmd) {
+            MainBlock.put(cmd);
+            return this;
+        }
+
+        public RobotProgramBlock.BlockWhile нц_пока(Predicate loopCondition) {
+            RobotProgramBlock.BlockWhile wh = new BlockWhile(MainBlock.character, loopCondition);
+            MainBlock.put(wh);
+            return wh;
+        }
+
         @Override
         public boolean isDone() {
             return MainBlock.isDone();

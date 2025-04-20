@@ -73,52 +73,8 @@ public class GameCharacter {
     }
 
     public void timeTick() {
-        /*
-        нц_пока(не(снизу_свободно()), {
-            вправо()
-        }).then({
 
-        })*/
-        /*
-BlockLinAlg Робот2
-нач
-нц пока справа свободно
-вправо
-кц
-нц
-нц пока справа не свободно
-вверх
-кц
-вправо
-нц пока снизу не свободно
-вправо
-кц
-вниз
-нц пока (слева не свободно) и (снизу свободно)
-вниз
-кц
-нц пока слева свободно
-влево
-кц
-нц пока (снизу свободно) и (слева не свободно)
-вниз
-кц
-влево
-нц пока (слева свободно) и (сверху не свободно)
-влево
-кц
-вверх
-нц пока справа не свободно
-вверх
-кц
-вправо
-нц пока (справа свободно) и (снизу не свободно)
-вправо
-кц
-кц
-кон
 
-         */
     }
 
 
@@ -132,6 +88,16 @@ BlockLinAlg Робот2
         static final RobotProgramBlock.MotionCommand ВЛЕВО  = RobotProgramBlock.MotionCommand.влево;
         static final RobotProgramBlock.MotionCommand ВНИЗ   = RobotProgramBlock.MotionCommand.вниз;
         static final RobotProgramBlock.MotionCommand ВПРАВО = RobotProgramBlock.MotionCommand.вправо;
+        static final RobotProgramBlock.SimplePredicateCommand справа_свободно = RobotProgramBlock.SimplePredicateCommand.справа_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand слева_свободно = RobotProgramBlock.SimplePredicateCommand.слева_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand сверху_свободно = RobotProgramBlock.SimplePredicateCommand.сверху_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand снизу_свободно = RobotProgramBlock.SimplePredicateCommand.снизу_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand справа_не_свободно = RobotProgramBlock.SimplePredicateCommand.справа_не_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand слева_не_свободно = RobotProgramBlock.SimplePredicateCommand.слева_не_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand сверху_не_свободно = RobotProgramBlock.SimplePredicateCommand.сверху_не_свободно;
+        static final RobotProgramBlock.SimplePredicateCommand снизу_не_свободно = RobotProgramBlock.SimplePredicateCommand.снизу_не_свободно;
+
+
         protected RobotProgram.алг alg;
         public Robot(GameBoard gb, int X, int Y, String bmpId) throws Exception {
             super(gb, X, Y, bmpId);
@@ -155,13 +121,39 @@ BlockLinAlg Робот2
                     .put(ВПРАВО);
         }
     }
+
     public static class Robot2 extends Robot {
         public Robot2(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "robot2");
             alg = new RobotProgram.алг(this);
-            alg.put(ВЛЕВО, ВЛЕВО)
-               .put(ВПРАВО)
-               .put(ВПРАВО);
+            alg.нц_пока(справа_свободно)
+                    .put(ВПРАВО);
+            alg.нц_пока(справа_не_свободно)
+                    .put(ВВЕРХ);
+            alg.put(ВПРАВО);
+            alg.нц_пока(снизу_не_свободно)
+                    .put(ВПРАВО);
+            alg.put(ВНИЗ);
+            alg.нц_пока(RobotProgramBlock.ComplexPredicate.
+                        И(слева_не_свободно, снизу_свободно))
+                    .put(ВНИЗ);
+            alg.нц_пока(слева_свободно)
+                    .put(ВЛЕВО);
+            alg.нц_пока(RobotProgramBlock.ComplexPredicate.
+                    И(снизу_свободно, слева_не_свободно))
+                    .put(ВНИЗ);
+            alg.put(ВЛЕВО);
+            alg.нц_пока(RobotProgramBlock.ComplexPredicate.
+                    И(слева_свободно, сверху_не_свободно))
+                    .put(ВЛЕВО);
+            //alg.put(ВЛЕВО);
+            alg.put(ВВЕРХ);
+            alg.нц_пока(справа_не_свободно)
+                    .put(ВВЕРХ);
+            alg.put(ВПРАВО);
+            alg.нц_пока(RobotProgramBlock.ComplexPredicate.
+                    И(справа_свободно, снизу_не_свободно))
+                    .put(ВПРАВО);
         }
     }
     public static class Robot3 extends Robot {
