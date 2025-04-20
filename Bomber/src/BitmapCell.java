@@ -9,10 +9,17 @@ public class BitmapCell extends Cell {
     private int W = 0, H = 0, ci = 0;
     private ByteBuffer[] bmpLineBuffer = null;
     private Color[][] bitmap = null;
+
+    public String getBmpId() {
+        return bmpId;
+    }
+
+    protected String bmpId;
     //public Color TransparentColor = null;
 
     public  BitmapCell(String bmpId) {
         this(new File("Bomber\\res\\"+bmpId+".bmp"));
+        this.bmpId = bmpId;
     }
 
     public  BitmapCell(File bmpFile) {

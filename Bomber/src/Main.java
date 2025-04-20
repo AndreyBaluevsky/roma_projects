@@ -5,13 +5,22 @@ import static org.lwjgl.opengl.GL11.*;
 public class Main {
 
 
-    private static class GameRunner extends Graphics {
+    public static class GameRunner extends Graphics {
         GameCharacter.Bomber bomber;
 
         public GameBoard gb = createGameBoard();
-        public GameCharacter.Robot1 rbt1;
-        public GameCharacter.Robot2 rbt2;
-        public GameCharacter.Robot3 rbt3;
+
+        public static GameCharacter.Robot1 rbt1;
+        public static GameCharacter.Robot2 rbt2;
+        public static GameCharacter.Robot3 rbt3;
+
+        public static GameCharacter.Robot findBot(int X, int Y) {
+            for(GameCharacter.Robot r: new GameCharacter.Robot[]{rbt1, rbt2, rbt3}) {
+                if(r.X==X && r.Y == Y) return r;
+            }
+            return null;
+        }
+
         private GameBoard createGameBoard() {
 //            final GameBoard gameBoard = new GameBoard(20, 20);
             GameBoard gameBoard = null;

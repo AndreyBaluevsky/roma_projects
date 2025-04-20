@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class GameCharacter {
 
     protected int X, Y;
@@ -78,9 +80,64 @@ public class GameCharacter {
     }
 
 
+
+
     public static class Bomber extends GameCharacter {
         public Bomber(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "bomber");
+        }
+
+        private boolean tryPushRobot(int newX, int newY, int newX2, int newY2) {
+            Cell cl = parentGameBoard.getCellsXY(newX, newY);
+            if(cl instanceof BitmapCell) {
+                BitmapCell bmpCl = (BitmapCell)cl;
+                boolean isRobot = bmpCl.getBmpId().contains("bot");
+                if(isRobot) {
+                    Robot r = Main.GameRunner.findBot(newX, newY);
+                    return r.moveTo(newX2, newY2);
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean вверх() {
+            boolean result = super.вверх();
+            if(result == false) {
+                if (tryPushRobot(X, Y+1, X, Y+2))
+                    result = super.вверх();
+            }
+            return result;
+        }
+
+        @Override
+        public boolean вниз() {
+            boolean result = super.вниз();
+            if(result == false) {
+                if (tryPushRobot(X, Y-1, X, Y-2))
+                    result = super.вниз();
+            }
+            return result;
+        }
+
+        @Override
+        public boolean влево() {
+            boolean result = super.влево();
+            if(result == false) {
+                if (tryPushRobot(X-1, Y, X-2, Y))
+                    result = super.влево();
+            }
+            return result;
+        }
+
+        @Override
+        public boolean вправо() {
+            boolean result = super.вправо();
+            if(result == false) {
+                if (tryPushRobot(X+1, Y, X+2, Y))
+                    result = super.вправо();
+            }
+            return result;
         }
     }
     public static abstract class Robot extends GameCharacter {
