@@ -42,7 +42,8 @@ public class Main {
                     dy = -1;
                 }
                 rbt1.moveRel(0, dy);
-                rbt2.moveRel(dy, 0);
+                rbt2.timeTick();
+                //rbt2.moveRel(dy, 0);
                 dx += dy;
                 frameRateRelCur = 0;
             } else {
@@ -65,16 +66,17 @@ public class Main {
                     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
                         switch (key) {
                             case GLFW_KEY_UP: case GLFW_KEY_W:
-                                bomber.moveRel(0, 1);
+                                //bomber.moveRel(0, 1);
+                                bomber.вверх();
                                 break;
                             case GLFW_KEY_DOWN: case GLFW_KEY_S:
-                                bomber.moveRel(0, -1);
+                                bomber.вниз();
                                 break;
                             case GLFW_KEY_LEFT: case GLFW_KEY_A:
-                                bomber.moveRel(-1, 0);
+                                bomber.влево();
                                 break;
                             case GLFW_KEY_RIGHT: case GLFW_KEY_D:
-                                bomber.moveRel(1, 0);
+                                bomber.вправо();
                                 break;
                             default:
                                 System.out.println("PRESS key: "+key+" scancode: "+scancode);
