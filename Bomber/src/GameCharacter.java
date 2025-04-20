@@ -1,4 +1,5 @@
 public class GameCharacter {
+
     protected int X, Y;
     protected Cell cell;
     protected GameBoard parentGameBoard;
@@ -72,15 +73,6 @@ public class GameCharacter {
     }
 
     public void timeTick() {
-        int d = (int)(Math.random()*100)%4;
-        switch (d) {
-            case 0:       вверх(); break;
-            case 1:       вниз(); break;
-            case 2:       влево(); break;
-            case 3:       вправо(); break;
-        }
-
-
         /*
         нц_пока(не(снизу_свободно()), {
             вправо()
@@ -88,7 +80,7 @@ public class GameCharacter {
 
         })*/
         /*
-алг Робот2
+BlockLinAlg Робот2
 нач
 нц пока справа свободно
 вправо
@@ -135,14 +127,56 @@ public class GameCharacter {
             super(gb, X, Y, "bomber");
         }
     }
-    public static class Robot1 extends GameCharacter {
-        public Robot1(GameBoard gb, int X, int Y) throws Exception {
-            super(gb, X, Y, "robot1");
+    public static abstract class Robot extends GameCharacter {
+        static final RobotProgramBlock.MotionCommand ВВЕРХ  = RobotProgramBlock.MotionCommand.вверх;
+        static final RobotProgramBlock.MotionCommand ВЛЕВО  = RobotProgramBlock.MotionCommand.влево;
+        static final RobotProgramBlock.MotionCommand ВНИЗ   = RobotProgramBlock.MotionCommand.вниз;
+        static final RobotProgramBlock.MotionCommand ВПРАВО = RobotProgramBlock.MotionCommand.вправо;
+        protected RobotProgram.алг alg;
+        public Robot(GameBoard gb, int X, int Y, String bmpId) throws Exception {
+            super(gb, X, Y, bmpId);
+        }
+        @Override
+        public void timeTick() {
+            if(this.alg!=null) {
+                if (this.alg.isDone()) this.alg.restart();
+                this.alg.doStep();
+            }
         }
     }
-    public static class Robot2 extends GameCharacter {
+    public static class Robot1 extends Robot {
+        public Robot1(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot1");
+            this.alg = new RobotProgram.алг(this);
+            alg.put(ВВЕРХ, ВВЕРХ,
+                    ВЛЕВО, ВЛЕВО,
+                    ВНИЗ,  ВНИЗ)
+                    .put(ВПРАВО)
+                    .put(ВПРАВО);
+        }
+    }
+    public static class Robot2 extends Robot {
         public Robot2(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "robot2");
+            alg = new RobotProgram.алг(this);
+            alg.put(ВЛЕВО, ВЛЕВО)
+               .put(ВПРАВО)
+               .put(ВПРАВО);
+        }
+    }
+    public static class Robot3 extends Robot {
+        public Robot3(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot2");
+        }
+        @Override
+        public void timeTick() {
+            int d = (int)(Math.random()*100)%4;
+            switch (d) {
+                case 0:       вверх(); break;
+                case 1:       вниз(); break;
+                case 2:       влево(); break;
+                case 3:       вправо(); break;
+            }
         }
     }
 }

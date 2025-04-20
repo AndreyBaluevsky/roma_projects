@@ -11,14 +11,16 @@ public class Main {
         public GameBoard gb = createGameBoard();
         public GameCharacter.Robot1 rbt1;
         public GameCharacter.Robot2 rbt2;
+        public GameCharacter.Robot3 rbt3;
         private GameBoard createGameBoard() {
 //            final GameBoard gameBoard = new GameBoard(20, 20);
             GameBoard gameBoard = null;
             try {
                 gameBoard = new GameBoard("Bomber\\res\\GameBoard.xml");
                 bomber = new GameCharacter.Bomber(gameBoard, 1, 1);
-                rbt1 = new GameCharacter.Robot1(gameBoard, 10, 10);
-                rbt2 = new GameCharacter.Robot2(gameBoard, 7, 8);
+                rbt1 = new GameCharacter.Robot1(gameBoard, 16, 10);
+                rbt2 = new GameCharacter.Robot2(gameBoard, 5, 8);
+                rbt3 = new GameCharacter.Robot3(gameBoard, 18, 18);
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
@@ -28,7 +30,6 @@ public class Main {
 
         public GameRunner(String title) { super(title); }
 
-        public int dx = 5, dy = -1;
         public int frameRateRel = 8;
         public int frameRateRelCur = 0;
 
@@ -36,20 +37,13 @@ public class Main {
         public void drawFrame() {
             //drawGrid(5, 5, 0.1f, 0.1f);
             if(frameRateRelCur>= frameRateRel) {
-                if (dx <= 0) {
-                    dy = 1;
-                } else if (dx >= 5) {
-                    dy = -1;
-                }
-                rbt1.moveRel(0, dy);
+                rbt1.timeTick();
                 rbt2.timeTick();
-                //rbt2.moveRel(dy, 0);
-                dx += dy;
+                rbt3.timeTick();
                 frameRateRelCur = 0;
             } else {
                 frameRateRelCur ++;
             }
-
             gb.draw(this);
         }
 
