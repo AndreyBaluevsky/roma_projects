@@ -1,5 +1,3 @@
-import java.awt.*;
-
 public class GameCharacter {
 
     protected int X, Y;
@@ -40,6 +38,11 @@ public class GameCharacter {
         boolean EmptyCell = cl == null || cl instanceof EmptyCell;
         return EmptyCell;
     }
+    private boolean isWallOrBrickCell(int X, int Y) {
+        Cell cl = parentGameBoard.getCellsXY(X, Y);
+        return cl != null && (
+                (cl instanceof WallCell) || (cl instanceof BrickCell));
+    }
 
     public boolean moveRel(int newX, int newY) {
         return moveTo(X+newX, Y+newY);
@@ -72,6 +75,18 @@ public class GameCharacter {
     }
     public boolean справа_свободно() {
         return isEmptyCell(X+1, Y);
+    }
+    public boolean сверху_стена() {
+        return isWallOrBrickCell(X, Y+1);
+    }
+    public boolean снизу_стена() {
+        return isWallOrBrickCell(X, Y-1);
+    }
+    public boolean слева_стена() {
+        return isWallOrBrickCell(X-1, Y);
+    }
+    public boolean справа_стена() {
+        return isWallOrBrickCell(X+1, Y);
     }
 
     public void timeTick() {
@@ -153,7 +168,18 @@ public class GameCharacter {
         static final RobotProgramBlock.SimplePredicateCommand слева_не_свободно = RobotProgramBlock.SimplePredicateCommand.слева_не_свободно;
         static final RobotProgramBlock.SimplePredicateCommand сверху_не_свободно = RobotProgramBlock.SimplePredicateCommand.сверху_не_свободно;
         static final RobotProgramBlock.SimplePredicateCommand снизу_не_свободно = RobotProgramBlock.SimplePredicateCommand.снизу_не_свободно;
-
+        static final RobotProgramBlock.SimplePredicateCommand снизу_стена = RobotProgramBlock.SimplePredicateCommand.снизу_стена;
+        static final RobotProgramBlock.SimplePredicateCommand сверху_стена = RobotProgramBlock.SimplePredicateCommand.сверху_стена;
+        static final RobotProgramBlock.SimplePredicateCommand слева_стена = RobotProgramBlock.SimplePredicateCommand.слева_стена;
+        static final RobotProgramBlock.SimplePredicateCommand справа_стена = RobotProgramBlock.SimplePredicateCommand.справа_стена;
+        static final RobotProgramBlock.Predicate снизу_не_стена = RobotProgramBlock.ComplexPredicate.
+                НЕ(RobotProgramBlock.SimplePredicateCommand.снизу_стена);
+        static final RobotProgramBlock.Predicate сверху_не_стена = RobotProgramBlock.ComplexPredicate.
+                НЕ(RobotProgramBlock.SimplePredicateCommand.сверху_стена);
+        static final RobotProgramBlock.Predicate слева_не_стена = RobotProgramBlock.ComplexPredicate.
+                НЕ(RobotProgramBlock.SimplePredicateCommand.слева_стена);
+        static final RobotProgramBlock.Predicate справа_не_стена = RobotProgramBlock.ComplexPredicate.
+                НЕ(RobotProgramBlock.SimplePredicateCommand.справа_стена);
 
         protected RobotProgram.алг alg;
         public Robot(GameBoard gb, int X, int Y, String bmpId) throws Exception {
@@ -183,33 +209,33 @@ public class GameCharacter {
         public Robot2(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "robot2");
             alg = new RobotProgram.алг(this);
-            alg.нц_пока(справа_свободно)
+            alg.нц_пока(справа_не_стена)
                     .put(ВПРАВО);
-            alg.нц_пока(справа_не_свободно)
+            alg.нц_пока(справа_стена)
                     .put(ВВЕРХ);
             alg.put(ВПРАВО);
-            alg.нц_пока(снизу_не_свободно)
+            alg.нц_пока(снизу_стена)
                     .put(ВПРАВО);
             alg.put(ВНИЗ);
             alg.нц_пока(RobotProgramBlock.ComplexPredicate.
-                        И(слева_не_свободно, снизу_свободно))
+                        И(слева_стена, снизу_не_стена))
                     .put(ВНИЗ);
-            alg.нц_пока(слева_свободно)
+            alg.нц_пока(слева_не_стена)
                     .put(ВЛЕВО);
             alg.нц_пока(RobotProgramBlock.ComplexPredicate.
-                    И(снизу_свободно, слева_не_свободно))
+                    И(снизу_не_стена, слева_стена))
                     .put(ВНИЗ);
             alg.put(ВЛЕВО);
             alg.нц_пока(RobotProgramBlock.ComplexPredicate.
-                    И(слева_свободно, сверху_не_свободно))
+                    И(слева_не_стена, сверху_стена))
                     .put(ВЛЕВО);
             //alg.put(ВЛЕВО);
             alg.put(ВВЕРХ);
-            alg.нц_пока(справа_не_свободно)
+            alg.нц_пока(справа_стена)
                     .put(ВВЕРХ);
             alg.put(ВПРАВО);
             alg.нц_пока(RobotProgramBlock.ComplexPredicate.
-                    И(справа_свободно, снизу_не_свободно))
+                    И(справа_не_стена, снизу_стена))
                     .put(ВПРАВО);
         }
     }

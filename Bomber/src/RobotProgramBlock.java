@@ -37,7 +37,8 @@ public interface RobotProgramBlock {
 
     public enum SimplePredicateCommand implements Predicate {
         сверху_свободно,    снизу_свободно,     слева_свободно,     справа_свободно,
-        сверху_не_свободно, снизу_не_свободно,  слева_не_свободно,  справа_не_свободно;
+        сверху_не_свободно, снизу_не_свободно,  слева_не_свободно,  справа_не_свободно,
+        сверху_стена, снизу_стена,  слева_стена,  справа_стена;
         @Override
         public boolean eval(GameCharacter character) {
             switch (this) {
@@ -49,12 +50,16 @@ public interface RobotProgramBlock {
                 case снизу_не_свободно:    return !character.снизу_свободно();
                 case справа_не_свободно:   return !character.справа_свободно();
                 case слева_не_свободно:    return !character.слева_свободно();
+                case сверху_стена:   return character.сверху_стена();
+                case снизу_стена:    return character.снизу_стена();
+                case справа_стена:   return character.справа_стена();
+                case слева_стена:    return character.слева_стена();
             }
             return false;
         }
     }
     public abstract class ComplexPredicate implements Predicate {
-        public static Predicate И(SimplePredicateCommand c1, SimplePredicateCommand c2) {
+        public static Predicate И(Predicate c1, Predicate c2) {
             return new Predicate() {
                 @Override
                 public boolean eval(GameCharacter character) {
@@ -62,7 +67,7 @@ public interface RobotProgramBlock {
                 }
             };
         }
-        public static Predicate ИЛИ(SimplePredicateCommand c1, SimplePredicateCommand c2) {
+        public static Predicate ИЛИ(Predicate c1, Predicate c2) {
             return new Predicate() {
                 @Override
                 public boolean eval(GameCharacter character) {
@@ -70,7 +75,7 @@ public interface RobotProgramBlock {
                 }
             };
         }
-        public static Predicate НЕ(SimplePredicateCommand c) {
+        public static Predicate НЕ(Predicate c) {
             return new Predicate() {
                 @Override
                 public boolean eval(GameCharacter character) {
