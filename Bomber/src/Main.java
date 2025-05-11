@@ -1,12 +1,17 @@
 import org.lwjgl.glfw.GLFWKeyCallback;
+
+import java.util.ArrayList;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+
 
 public class Main {
 
 
     public static class GameRunner extends Graphics {
         private static GameCharacter.Robot[] robotsList;
+        public static ArrayList<GameCharacter.Bomb> bombsList = new ArrayList<>();
         GameCharacter.Bomber bomber;
 
         public GameBoard gb = createGameBoard();
@@ -56,14 +61,16 @@ public class Main {
         public void drawFrame() {
             //drawGrid(5, 5, 0.1f, 0.1f);
             if(frameRateRelCur>= frameRateRel) {
-                rbt1.timeTick();
-                rbt2.timeTick();
-                rbt3.timeTick();
-                rbt4.timeTick();
-                rbt5.timeTick();
-                rbt6.timeTick();
-                rbt7.timeTick();
-
+                for(GameCharacter.Robot r: robotsList) {
+                    r.timeTick();
+                }
+                // Use manual counter to overcome:
+                // Exception in thread "main" java.util.ConcurrentModificationException
+                //	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1042)
+                //	at java.base/java.util.ArrayList$Itr.next(ArrayList.java:996)
+                for (int i = bombsList.size()-1; i >= 0; i--) {
+                    bombsList.get(i).timeTick();
+                }
                 frameRateRelCur = 0;
             } else {
                 frameRateRelCur ++;
@@ -98,7 +105,7 @@ public class Main {
                                 break;
                             case GLFW_KEY_SPACE:
                                 bomber.nextType = GameCharacter.NextType.Bomb;
-                                //System.out.println("Bomb has been planted!");
+                                break;
                             default:
                                 System.out.println("PRESS key: "+key+" scancode: "+scancode);
                         }

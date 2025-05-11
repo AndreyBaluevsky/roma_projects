@@ -34,7 +34,9 @@ public class GameCharacter {
                 switch (nextType) {
                     case Bomb:
                         try {
-                            newCell = new BitmapCell("bomb00"); //(parentGameBoard, X, Y);
+                            Bomb newBomb = new Bomb(parentGameBoard, X, Y);
+                            Main.GameRunner.bombsList.add(newBomb);
+                            newCell = newBomb.cell;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -174,8 +176,24 @@ public class GameCharacter {
     }
 
     public static class Bomb extends GameCharacter {
+        int timeToLive = 10;
+        int curFrame = 0;
         public Bomb(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "bomb00");
+        }
+
+        @Override
+        public void timeTick() {
+            if(timeToLive>0)
+                timeToLive -= 1;
+            else if(curFrame<=4) {
+                BitmapCell bmpCell = (BitmapCell)parentGameBoard.getCellsXY(X, Y);
+                bmpCell.setBmpId("bomb0"+String.valueOf(curFrame));
+                curFrame += 1;
+            } else {
+                Main.GameRunner.bombsList.remove(this);
+                parentGameBoard.setCellsXY(X,Y,null);
+            }
         }
     }
     public static class Flame extends GameCharacter {

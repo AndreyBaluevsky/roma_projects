@@ -6,30 +6,35 @@ import java.nio.ByteOrder;
 
 public class BitmapCell extends Cell {
     private byte[] btBMP;
-    private int W = 0, H = 0, ci = 0;
+    private int W = 64, H = 64, ci = 0;
     private ByteBuffer[] bmpLineBuffer = null;
     private Color[][] bitmap = null;
 
     public String getBmpId() {
         return bmpId;
     }
+    public void setBmpId(String bmpId) {
+        loadBmpFileFromId(bmpId);
+        this.bmpId = bmpId;
+    }
 
     protected String bmpId;
     //public Color TransparentColor = null;
 
-    public  BitmapCell(String bmpId) {
-        this(new File("Bomber\\res\\"+bmpId+".bmp"));
-        this.bmpId = bmpId;
+    public BitmapCell(String bmpId) {
+        setBmpId(bmpId);
+        background = Color.WHITE;
+        // TransparentColor = super.background;
     }
 
-
-    public  BitmapCell(File bmpFile) {
+    protected void loadBmpFileFromId(String bmpId) {
+        loadBmpFile(new File("Bomber\\res\\"+bmpId+".bmp"));
+    }
+    protected void loadBmpFile(File bmpFile) {
         if(loadBmp(bmpFile)) {
             bitmap = new Color[H][];
             loadBmpPixels(W, H, bmpLineBuffer, bitmap);
         }
-        background = Color.WHITE;
-        // TransparentColor = super.background;
     }
 
     private static void loadBmpPixels(int W, int H, ByteBuffer[] bmpLineBuffer, Color[][] bitmap) {
