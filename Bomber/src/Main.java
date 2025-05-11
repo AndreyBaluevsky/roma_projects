@@ -13,6 +13,10 @@ public class Main {
         public static GameCharacter.Robot1 rbt1;
         public static GameCharacter.Robot2 rbt2;
         public static GameCharacter.Robot3 rbt3;
+        public static GameCharacter.Robot4 rbt4;
+        public static GameCharacter.Robot5 rbt5;
+        public static GameCharacter.Robot6 rbt6;
+        public static GameCharacter.Robot7 rbt7;
 
         public static GameCharacter.Robot findBot(int X, int Y) {
             for(GameCharacter.Robot r: new GameCharacter.Robot[]{rbt1, rbt2, rbt3}) {
@@ -30,6 +34,10 @@ public class Main {
                 rbt1 = new GameCharacter.Robot1(gameBoard, 16, 10);
                 rbt2 = new GameCharacter.Robot2(gameBoard, 5, 8);
                 rbt3 = new GameCharacter.Robot3(gameBoard, 18, 18);
+                rbt4 = new GameCharacter.Robot4(gameBoard, 21, 25);
+                rbt5 = new GameCharacter.Robot5(gameBoard, 24, 23);
+                rbt6 = new GameCharacter.Robot6(gameBoard, 26, 16);
+                rbt7 = new GameCharacter.Robot7(gameBoard, 24, 21);
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
@@ -49,6 +57,11 @@ public class Main {
                 rbt1.timeTick();
                 rbt2.timeTick();
                 rbt3.timeTick();
+                rbt4.timeTick();
+                rbt5.timeTick();
+                rbt6.timeTick();
+                rbt7.timeTick();
+
                 frameRateRelCur = 0;
             } else {
                 frameRateRelCur ++;

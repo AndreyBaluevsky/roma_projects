@@ -254,4 +254,44 @@ public class GameCharacter {
             }
         }
     }
+    public static class Robot4 extends Robot {
+        public Robot4(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot2");
+            alg = new RobotProgram.алг(this);
+            alg.put(ВПРАВО);
+            alg.put(ВНИЗ);
+            alg.put(ВЛЕВО);
+            alg.put(ВВЕРХ);
+        }
+    }
+    public static class Robot5 extends Robot {
+        public Robot5(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot2");
+            alg = new RobotProgram.алг(this);
+            alg.put(ВПРАВО);
+            alg.put(ВНИЗ);
+            alg.put(ВЛЕВО);
+            alg.put(ВВЕРХ);
+        }
+    }
+    public static class Robot6 extends Robot {
+        public Robot6(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot2");
+            alg = new RobotProgram.алг(this);
+            alg.put(ВПРАВО);
+            alg.put(ВНИЗ);
+            alg.put(ВЛЕВО);
+            alg.put(ВВЕРХ);
+        }
+    }
+    public static class Robot7 extends Robot {
+        public Robot7(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "robot2");
+            alg = new RobotProgram.алг(this);
+            alg.put(ВПРАВО);
+            alg.put(ВНИЗ);
+            alg.put(ВЛЕВО);
+            alg.put(ВВЕРХ);
+        }
+    }
 }
