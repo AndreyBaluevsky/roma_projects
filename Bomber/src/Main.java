@@ -6,6 +6,7 @@ public class Main {
 
 
     public static class GameRunner extends Graphics {
+        private static GameCharacter.Robot[] robotsList;
         GameCharacter.Bomber bomber;
 
         public GameBoard gb = createGameBoard();
@@ -19,7 +20,7 @@ public class Main {
         public static GameCharacter.Robot7 rbt7;
 
         public static GameCharacter.Robot findBot(int X, int Y) {
-            for(GameCharacter.Robot r: new GameCharacter.Robot[]{rbt1, rbt2, rbt3}) {
+            for(GameCharacter.Robot r: robotsList) {
                 if(r.X==X && r.Y == Y) return r;
             }
             return null;
@@ -38,6 +39,7 @@ public class Main {
                 rbt5 = new GameCharacter.Robot5(gameBoard, 24, 23);
                 rbt6 = new GameCharacter.Robot6(gameBoard, 26, 16);
                 rbt7 = new GameCharacter.Robot7(gameBoard, 24, 21);
+                robotsList = new GameCharacter.Robot[]{rbt1, rbt2, rbt3, rbt4, rbt5, rbt6, rbt7};
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
@@ -94,6 +96,9 @@ public class Main {
                             case GLFW_KEY_RIGHT: case GLFW_KEY_D:
                                 bomber.вправо();
                                 break;
+                            case GLFW_KEY_SPACE:
+                                bomber.nextType = GameCharacter.NextType.Bomb;
+                                //System.out.println("Bomb has been planted!");
                             default:
                                 System.out.println("PRESS key: "+key+" scancode: "+scancode);
                         }

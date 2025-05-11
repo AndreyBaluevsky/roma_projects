@@ -22,6 +22,7 @@ public class BitmapCell extends Cell {
         this.bmpId = bmpId;
     }
 
+
     public  BitmapCell(File bmpFile) {
         if(loadBmp(bmpFile)) {
             bitmap = new Color[H][];

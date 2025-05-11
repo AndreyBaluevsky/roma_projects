@@ -4,6 +4,11 @@ public class GameCharacter {
     protected Cell cell;
     protected GameBoard parentGameBoard;
 
+    enum NextType {
+        Bomb;
+    };
+    public NextType nextType = null;
+
     public GameCharacter(GameBoard gb, int X, int Y, String bmpId) throws Exception {
         this.parentGameBoard = gb;
         this.X = X;
@@ -24,7 +29,19 @@ public class GameCharacter {
         if(bInsideGameBoard) {
             boolean EmptyCell = isEmptyCell(newX, newY);
             if(EmptyCell) {
-                parentGameBoard.setCellsXY(X, Y,null);
+                Cell newCell = null;
+                if(nextType!=null)
+                switch (nextType) {
+                    case Bomb:
+                        try {
+                            newCell = new BitmapCell("bomb00"); //(parentGameBoard, X, Y);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        nextType = null;
+                        break;
+                }
+                parentGameBoard.setCellsXY(X, Y, newCell);
                 X = newX; Y = newY;
                 parentGameBoard.setCellsXY(X, Y, cell);
                 return  true;
@@ -155,6 +172,18 @@ public class GameCharacter {
             return result;
         }
     }
+
+    public static class Bomb extends GameCharacter {
+        public Bomb(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "bomb00");
+        }
+    }
+    public static class Flame extends GameCharacter {
+        public Flame(GameBoard gb, int X, int Y) throws Exception {
+            super(gb, X, Y, "flame00");
+        }
+    }
+
     public static abstract class Robot extends GameCharacter {
         static final RobotProgramBlock.MotionCommand ВВЕРХ  = RobotProgramBlock.MotionCommand.вверх;
         static final RobotProgramBlock.MotionCommand ВЛЕВО  = RobotProgramBlock.MotionCommand.влево;
