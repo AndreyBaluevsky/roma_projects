@@ -104,20 +104,39 @@ public class Graphics {
         }
     }
 
-    public static void drawBitmap(double px, double ph, Color[][] bmp) {
+    public static void drawBitmap(double px, double ph, Color[][] bmp, int rotation) {
         int M = bmp.length, N = bmp[0].length;
         glPushMatrix();
-        //glTranslatef(1, 1, 0);
         //glScalef(2, 2, 1);
-        //glRotatef(180,0,0, 1); //
+        rotation &=3;
+        switch (rotation) {
+            case 1:
+                glTranslatef(1, 0, 0);
+                glRotatef(90,0,0, 1);
+                break;
+            case 2:
+                glTranslatef(1, 1, 0);
+                glRotatef(180,0,0, 1);
+                break;
+            case 3:
+                glTranslatef(0, 1, 0);
+                glRotatef(270,0,0, 1);
+                break;
+        }
         glBegin(GL_QUADS);
         //glLineWidth(2.0f);
+        drawPixels(px, ph, bmp, M, N);
+        glEnd();
+        glPopMatrix();
+    }
+
+    private static void drawPixels(double px, double ph, Color[][] bmp, int m, int n) {
         double y1 = 0;
-        for (int i=0; i<M; i++) {
+        for (int i = 0; i< m; i++) {
             double y2 =y1 + ph;
             double x1 = 0;
             final Color[] curRow = bmp[i];
-            for (int j=0; j<N; j++) {
+            for (int j = 0; j< n; j++) {
                 double x2 = x1+px;
                 Color pix = curRow[j];
                 glColor3f(pix.getRed()/255f, pix.getGreen()/255f, pix.getBlue()/255f);
@@ -126,8 +145,6 @@ public class Graphics {
             }
             y1 = y2;
         }
-        glEnd();
-        glPopMatrix();
     }
 
     public static void putRect(float x1, float y1, float x2, float y2) {

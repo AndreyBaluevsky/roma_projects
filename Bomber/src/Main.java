@@ -3,48 +3,19 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 
 
 public class Main {
-
+    public static GameRunner activeGamePlay;
 
     public static class GameRunner extends Graphics {
-        private static GameCharacter.Robot[] robotsList;
-        public static ArrayList<GameCharacter.Bomb> bombsList = new ArrayList<>();
-        GameCharacter.Bomber bomber;
+        public static GameBoard gb = createGameBoard();
 
-        public GameBoard gb = createGameBoard();
-
-        public static GameCharacter.Robot1 rbt1;
-        public static GameCharacter.Robot2 rbt2;
-        public static GameCharacter.Robot3 rbt3;
-        public static GameCharacter.Robot4 rbt4;
-        public static GameCharacter.Robot5 rbt5;
-        public static GameCharacter.Robot6 rbt6;
-        public static GameCharacter.Robot7 rbt7;
-
-        public static GameCharacter.Robot findBot(int X, int Y) {
-            for(GameCharacter.Robot r: robotsList) {
-                if(r.X==X && r.Y == Y) return r;
-            }
-            return null;
-        }
-
-        private GameBoard createGameBoard() {
+        private static GameBoard createGameBoard() {
 //            final GameBoard gameBoard = new GameBoard(20, 20);
             GameBoard gameBoard = null;
             try {
                 gameBoard = new GameBoard("Bomber\\res\\GameBoard.xml");
-                bomber = new GameCharacter.Bomber(gameBoard, 1, 1);
-                rbt1 = new GameCharacter.Robot1(gameBoard, 16, 10);
-                rbt2 = new GameCharacter.Robot2(gameBoard, 5, 8);
-                rbt3 = new GameCharacter.Robot3(gameBoard, 18, 18);
-                rbt4 = new GameCharacter.Robot4(gameBoard, 21, 25);
-                rbt5 = new GameCharacter.Robot5(gameBoard, 24, 23);
-                rbt6 = new GameCharacter.Robot6(gameBoard, 26, 16);
-                rbt7 = new GameCharacter.Robot7(gameBoard, 24, 21);
-                robotsList = new GameCharacter.Robot[]{rbt1, rbt2, rbt3, rbt4, rbt5, rbt6, rbt7};
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
@@ -52,22 +23,24 @@ public class Main {
             return gameBoard;
         }
 
-        public GameRunner(String title) { super(title); }
+        public GameRunner(String title) { super(title); Main.activeGamePlay = this; }
 
         public int frameRateRel = 8;
         public int frameRateRelCur = 0;
 
-        @Override
+        @Override        
         public void drawFrame() {
             //drawGrid(5, 5, 0.1f, 0.1f);
             if(frameRateRelCur>= frameRateRel) {
-                for(GameCharacter.Robot r: robotsList) {
-                    r.timeTick();
-                }
-                // Use manual counter to overcome:
+                // Используем счётчик вручную, чтобы обойти ситуацию:
                 // Exception in thread "main" java.util.ConcurrentModificationException
                 //	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1042)
                 //	at java.base/java.util.ArrayList$Itr.next(ArrayList.java:996)
+                final ArrayList<GameCharacter.Robot> robotsList = gb.robotsList;
+                for (int i = robotsList.size()-1; i >= 0; i--) {
+                    robotsList.get(i).timeTick();
+                }
+                final ArrayList<GameCharacter.Bomb> bombsList = gb.bombsList;
                 for (int i = bombsList.size()-1; i >= 0; i--) {
                     bombsList.get(i).timeTick();
                 }
@@ -77,7 +50,16 @@ public class Main {
             }
             gb.draw(this);
         }
-
+		
+		public void gameOver() throws Exception {
+			testKeys();
+            gb = new GameBoard("Bomber\\res\\GameBoard_GameOver.xml");
+		}
+		public void youWin() throws Exception {
+			testKeys();
+			gb = new GameBoard("Bomber\\res\\GameBoard_YouWin.xml");
+		}
+		
         private GLFWKeyCallback keyCallback;
 
         @Override
@@ -87,24 +69,25 @@ public class Main {
         private void activateKeyHandler() {
             keyCallback = new GLFWKeyCallback() {
                 @Override
-                public void invoke(long window, int key, int scancode, int action, int mods) {
+                public void invoke(long window, int key, int scancode, int action, int mods) {					
                     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+						if(gb.bomber != null)
                         switch (key) {
                             case GLFW_KEY_UP: case GLFW_KEY_W:
                                 //bomber.moveRel(0, 1);
-                                bomber.вверх();
-                                break;
+                               gb.bomber.вверх();
+                               break;
                             case GLFW_KEY_DOWN: case GLFW_KEY_S:
-                                bomber.вниз();
+                                gb.bomber.вниз();
                                 break;
                             case GLFW_KEY_LEFT: case GLFW_KEY_A:
-                                bomber.влево();
+                                gb.bomber.влево();
                                 break;
                             case GLFW_KEY_RIGHT: case GLFW_KEY_D:
-                                bomber.вправо();
+                                gb.bomber.вправо();
                                 break;
                             case GLFW_KEY_SPACE:
-                                bomber.nextType = GameCharacter.NextType.Bomb;
+                                gb.bomber.nextType = GameCharacter.Movable.NextType.Bomb;
                                 break;
                             default:
                                 System.out.println("PRESS key: "+key+" scancode: "+scancode);

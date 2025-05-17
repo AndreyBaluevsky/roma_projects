@@ -10,11 +10,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class GameBoard
 implements IDrawable {
+
+    public GameCharacter.Bomber bomber;
+    public ArrayList<GameCharacter.Robot> robotsList = new ArrayList<>();
+    public ArrayList<GameCharacter.Bomb>  bombsList = new ArrayList<>();
+
     private final int cellRows, cellColumns;
     public int getCellRows() {
         return cellRows;
@@ -30,7 +38,7 @@ implements IDrawable {
 
     private Cell defaultCell = new EmptyCell();
 
-    public GameBoard(int cellRows, int cellColumns) {
+    public GameBoard(int cellRows, int cellColumns) throws Exception {
         this.cellRows = cellRows;
         this.cellColumns = cellColumns;
         initGBSize();
@@ -51,29 +59,29 @@ implements IDrawable {
 
     public GameBoard(String filePath) throws Exception {
         final Element docElem = loadXml(filePath);
-        this.cellRows       = Integer.parseInt( docElem.getAttribute("Rows"));
-        this.cellColumns    = Integer.parseInt( docElem.getAttribute("Cols"));
+        this.cellRows       = getInt(docElem, "Rows");
+        this.cellColumns    = getInt(docElem, "Cols");
         initGBSize();
         loadFromXml(docElem);
     }
 
-    private void loadFromXml(Element docElem) {
+    private void loadFromXml(Element docElem) throws Exception {
         NodeList nList = docElem.getElementsByTagName("WallH");
         for (int i=0; i < nList.getLength(); i++) {
             final Node nWH = nList.item(i);
             final Element lmWH = (Element) nWH;
-            final int x = Integer.parseInt(lmWH.getAttribute("StartX"));
-            final int y = Integer.parseInt(lmWH.getAttribute("StartY"));
-            final int k = Integer.parseInt(lmWH.getAttribute("Count"));
+            final int x = getInt(lmWH, "StartX");
+            final int y = getInt(lmWH, "StartY");
+            final int k = getInt(lmWH, "Count");
             putWallH(x, y, k);
         }
         nList = docElem.getElementsByTagName("WallV");
         for (int i=0; i < nList.getLength(); i++) {
             final Node nWH = nList.item(i);
             final Element lmWH = (Element) nWH;
-            final int x = Integer.parseInt(lmWH.getAttribute("StartX"));
-            final int y = Integer.parseInt(lmWH.getAttribute("StartY"));
-            final int k = Integer.parseInt(lmWH.getAttribute("Count"));
+            final int x = getInt(lmWH, "StartX");
+            final int y = getInt(lmWH, "StartY");
+            final int k = getInt(lmWH, "Count");
             putWallV(x, y, k);
         }
         NodeList nListZigZag = docElem.getElementsByTagName("WallZigZag");
@@ -85,8 +93,8 @@ implements IDrawable {
             final Point[] pointsXY = new Point[cntZigZag];
             for(int j = 0; j < cntZigZag; j++) {
                 Element lmPoint = (Element) nlPoints.item(j);
-                final int pX = Integer.parseInt(lmPoint.getAttribute("X"));
-                final int pY = Integer.parseInt(lmPoint.getAttribute("Y"));
+                final int pX = getInt(lmPoint, "X");
+                final int pY = getInt(lmPoint, "Y");
                 pointsXY[j] = new Point(pX, pY);
             }
             putWallZigZag(pointsXY);
@@ -95,31 +103,95 @@ implements IDrawable {
         for(int j = 0; j < nListBmp.getLength(); j++) {
             final Node nBmp = nListBmp.item(j);
             final Element lmBmp = (Element) nBmp;
-            final int x = Integer.parseInt(lmBmp.getAttribute("X"));
-            final int y = Integer.parseInt(lmBmp.getAttribute("Y"));
+            final int x = getInt(lmBmp, "X");
+            final int y = getInt(lmBmp, "Y");
             final String id = lmBmp.getAttribute("Id");
             setCellsXY(x, y, new BitmapCell(id));
         }
 
+        NodeList nListRobot = docElem.getElementsByTagName("Robot");
+        for(int j = 0; j < nListRobot.getLength(); j++) {
+            final Element lmRobot = (Element) nListRobot.item(j);
+            final int x = getInt(lmRobot, "X");
+            final int y = getInt(lmRobot, "Y");
+            final String robotType = lmRobot.getAttribute("Type");
+            final GameCharacter.Robot newRbt;
+            switch (robotType) {
+                case "Universal": break;
+                default:
+                    newRbt = makeStdRobot(x, y, robotType);
+                    robotsList.add(newRbt);
+            }
+        }
+
+        NodeList nListBomber = docElem.getElementsByTagName("Bomber");
+        if(nListBomber.getLength()>0) {
+            final Element lmBomber = (Element)nListBomber.item(0);
+            final int x = getInt(lmBomber, "X");
+            final int y = getInt(lmBomber, "Y");
+            bomber = new GameCharacter.Bomber(this, x, y);
+        }
+		
+        NodeList nListBomb = docElem.getElementsByTagName("Bomb");
+		for(int j = 0; j < nListBomb.getLength(); j++) {
+			final Element lmBomb = (Element) nListBomb.item(j);
+            final int x = getInt(lmBomb, "X");
+            final int y = getInt(lmBomb, "Y");
+            final GameCharacter.Bomb bomb =
+                    lmBomb.hasAttribute("TimeOut")?
+                        new GameCharacter.Bomb(this, x, y,
+                                getInt(lmBomb, "TimeOut")):
+                        new GameCharacter.Bomb(this, x, y);
+            bombsList.add(bomb);
+		}
+    }
+
+    private int getInt(Element xlm, String x) {
+        return Integer.parseInt(xlm.getAttribute(x));
+    }
+
+    private GameCharacter.Robot makeStdRobot(int x, int y, String robotType) throws Exception {
+        Class<? extends GameCharacter.Robot> clsRobot =
+                (Class<? extends GameCharacter.Robot>)Class.forName("GameCharacter$"+robotType);
+        Constructor<?> ctor = clsRobot.getConstructor(GameBoard.class, int.class, int.class);
+        return (GameCharacter.Robot)ctor.newInstance(new Object[] {this, x, y });
     }
 
     private Element loadXml(String filePath) throws ParserConfigurationException, SAXException, IOException {
+        // System.out.println("Calling loadXml ...");
         File fXmlFile = new File(filePath);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(fXmlFile);
+        Document doc;
+        if(fXmlFile.exists()) {
+            doc = dBuilder.parse(fXmlFile);
+        } else {
+            final String fileName = fXmlFile.getName();
+            // System.out.println("loadXml: try reading with getResourceAsStream: "+fileName);
+            InputStream resStream = Main.class.getClassLoader().getResourceAsStream(fileName);
+            doc = dBuilder.parse(resStream);
+        }
         final Element docElem = doc.getDocumentElement();
         docElem.normalize();
         return docElem;
     }
 
 
-    private void putDemoGameboardItems() {
+    private void putDemoGameboardItems() throws Exception {
         putWallH(2, 2, 1);
         putWallH(4, 3, 2);
         putWallH(3, 5, 3);
         putBrickcellWallH (6, 7, 5);
         setCellsXY(8, 4, new BitmapCell("pic_v3"));
+        bomber = new GameCharacter.Bomber(this, 1, 1);
+
+        robotsList.add(new GameCharacter.LoopWalker2(this, 16, 10));
+        robotsList.add(new GameCharacter.Robot2(this, 5, 8));
+        robotsList.add(new GameCharacter.Wanderer(this, 18, 18));
+        robotsList.add(new GameCharacter.LoopWalker(this, 21, 25));
+        robotsList.add(new GameCharacter.Robot5(this, 24, 23));
+        robotsList.add(new GameCharacter.Robot6(this, 26, 16));
+        robotsList.add(new GameCharacter.Robot7(this, 24, 21));
     }
 
 
@@ -309,7 +381,26 @@ implements IDrawable {
     public Cell getCellsXY(int X, int Y) { // 1-based, B-L -> T-R
         return getCellsRC(cellRows-Y-1,cellColumns-X-1);
     }
+	
+	public boolean hasBomber(int X, int Y) {
+		return bomber!=null && bomber.X==X && bomber.Y==Y;
+	}
 
+	public GameCharacter.Robot findRobot(int X, int Y) {
+		for(GameCharacter.Robot r: this.robotsList) {
+			if(r.X==X && r.Y == Y) return r;
+		}
+		return null;
+	}
+	public GameCharacter.Alive findAlive(int X, int Y) {
+		GameCharacter.Alive foundAlive = null;
+		if(hasBomber(X, Y))
+			foundAlive = bomber;
+		else 
+			foundAlive = findRobot(X, Y);
+		return foundAlive;
+	}
+	
     @Override
     public void draw(Graphics g) {
         //final float CW = 0.95f, CH=0.95f;

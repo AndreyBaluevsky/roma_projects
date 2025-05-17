@@ -5,7 +5,7 @@ public class RobotProgram {
 
     public static class алг implements RobotProgramBlock {
         RobotProgramBlock.BlockLinAlg MainBlock;
-        public алг(GameCharacter character) {
+        public алг(GameCharacter.Movable character) {
             MainBlock = new RobotProgramBlock.BlockLinAlg(character);
         }
         boolean doStep() {
@@ -34,7 +34,7 @@ public class RobotProgram {
             return MainBlock.isDone();
         }
         @Override
-        public boolean doStep(GameCharacter character) {
+        public boolean doStep(GameCharacter.Movable character) {
             return MainBlock.doStep(character);
         }
         @Override

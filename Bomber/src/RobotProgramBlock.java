@@ -3,10 +3,10 @@ import java.util.Iterator;
 
 public interface RobotProgramBlock {
     boolean isDone();
-    boolean doStep(GameCharacter character);
+    boolean doStep(GameCharacter.Movable character);
     boolean restart();
     // stuff...
-    public interface Command extends RobotProgramBlock {
+    interface Command extends RobotProgramBlock {
 
     }
     public enum MotionCommand implements Command {
@@ -14,7 +14,7 @@ public interface RobotProgramBlock {
         private boolean isDone = false;
         @Override public boolean isDone() { return this.isDone; }
         @Override
-        public boolean doStep(GameCharacter character) {
+        public boolean doStep(GameCharacter.Movable character) {
             isDone = true;
             switch (this) {
                 case вниз:   return character.вниз();
@@ -32,7 +32,7 @@ public interface RobotProgramBlock {
     }
 
     public interface Predicate {
-        boolean eval(GameCharacter character);
+        boolean eval(GameCharacter.Movable character);
     }
 
     public enum SimplePredicateCommand implements Predicate {
@@ -40,7 +40,7 @@ public interface RobotProgramBlock {
         сверху_не_свободно, снизу_не_свободно,  слева_не_свободно,  справа_не_свободно,
         сверху_стена, снизу_стена,  слева_стена,  справа_стена;
         @Override
-        public boolean eval(GameCharacter character) {
+        public boolean eval(GameCharacter.Movable character) {
             switch (this) {
                 case сверху_свободно:   return character.сверху_свободно();
                 case снизу_свободно:    return character.снизу_свободно();
@@ -62,7 +62,7 @@ public interface RobotProgramBlock {
         public static Predicate И(Predicate c1, Predicate c2) {
             return new Predicate() {
                 @Override
-                public boolean eval(GameCharacter character) {
+                public boolean eval(GameCharacter.Movable character) {
                     return c1.eval(character) && c2.eval(character);
                 }
             };
@@ -70,7 +70,7 @@ public interface RobotProgramBlock {
         public static Predicate ИЛИ(Predicate c1, Predicate c2) {
             return new Predicate() {
                 @Override
-                public boolean eval(GameCharacter character) {
+                public boolean eval(GameCharacter.Movable character) {
                     return c1.eval(character) || c2.eval(character);
                 }
             };
@@ -78,7 +78,7 @@ public interface RobotProgramBlock {
         public static Predicate НЕ(Predicate c) {
             return new Predicate() {
                 @Override
-                public boolean eval(GameCharacter character) {
+                public boolean eval(GameCharacter.Movable character) {
                     return !c.eval(character);
                 }
             };
@@ -87,7 +87,7 @@ public interface RobotProgramBlock {
 
 
     public class BlockLinAlg implements RobotProgramBlock {
-        protected GameCharacter character;
+        protected GameCharacter.Movable character;
         protected RobotProgramBlock m_curStp = null;
         protected ArrayList<RobotProgramBlock> m_steps  = new ArrayList<>();
         protected Iterator<RobotProgramBlock> m_itStep = null;
@@ -97,7 +97,7 @@ public interface RobotProgramBlock {
             }
             return m_itStep;
         }
-        public BlockLinAlg(GameCharacter character) {
+        public BlockLinAlg(GameCharacter.Movable character) {
             this.character = character;
         }
         protected RobotProgramBlock curStp() {
@@ -111,7 +111,7 @@ public interface RobotProgramBlock {
             return curStp()==null;
         }
         @Override
-        public boolean doStep(GameCharacter character) {
+        public boolean doStep(GameCharacter.Movable character) {
             if(!isDone()) {
                 boolean result = m_curStp.doStep(character);
                 if(result) {
@@ -151,7 +151,7 @@ public interface RobotProgramBlock {
             return loopCondition.eval(character);
         };
         protected Predicate loopCondition;
-        public BlockWhile(GameCharacter character, Predicate loopCondition) {
+        public BlockWhile(GameCharacter.Movable character, Predicate loopCondition) {
             super(character);
             this.loopCondition = loopCondition;
         }
