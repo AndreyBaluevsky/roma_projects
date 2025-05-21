@@ -509,10 +509,10 @@ public abstract class GameCharacter {
         public LoopWalker2(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "robot1");
             this.alg = new RobotProgram.алг(this);
-            alg.put(ВВЕРХ, ВВЕРХ,
-                    ВЛЕВО, ВЛЕВО,
-                    ВНИЗ,  ВНИЗ)
-                    .put(ВПРАВО)
+            alg.put(ВВЕРХ, ВВЕРХ, ВВЕРХ,
+                    ВЛЕВО, ВЛЕВО, ВЛЕВО,
+                    ВНИЗ,  ВНИЗ,  ВНИЗ)
+                    .put(ВПРАВО).put(ВПРАВО)
                     .put(ВПРАВО);
         }
     }
@@ -576,14 +576,14 @@ public abstract class GameCharacter {
             alg.put(ВВЕРХ);
         }
     }
-    public static class Robot5 extends Robot {
-        public Robot5(GameBoard gb, int X, int Y) throws Exception {
+    public static class LoopWalker1 extends Robot {
+        public LoopWalker1(GameBoard gb, int X, int Y) throws Exception {
             super(gb, X, Y, "robot5");
             alg = new RobotProgram.алг(this);
-            alg.put(ВПРАВО);
-            alg.put(ВНИЗ);
-            alg.put(ВЛЕВО);
-            alg.put(ВВЕРХ);
+            alg.put(ВПРАВО);    alg.put(ВПРАВО);
+            alg.put(ВНИЗ);      alg.put(ВНИЗ);
+            alg.put(ВЛЕВО);     alg.put(ВЛЕВО);
+            alg.put(ВВЕРХ);     alg.put(ВВЕРХ);
         }
     }
     public static class Robot6 extends Robot {

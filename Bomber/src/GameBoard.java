@@ -189,7 +189,7 @@ implements IDrawable {
         robotsList.add(new GameCharacter.Robot2(this, 5, 8));
         robotsList.add(new GameCharacter.Wanderer(this, 18, 18));
         robotsList.add(new GameCharacter.LoopWalker(this, 21, 25));
-        robotsList.add(new GameCharacter.Robot5(this, 24, 23));
+        robotsList.add(new GameCharacter.LoopWalker1(this, 24, 23));
         robotsList.add(new GameCharacter.Robot6(this, 26, 16));
         robotsList.add(new GameCharacter.Robot7(this, 24, 21));
     }
@@ -229,6 +229,11 @@ implements IDrawable {
             }
             p1 = p2;
         }
+		if(p1!=null) {
+			w1 = w2;
+            WallCell[] wallCells = putWallH(p1.x, p1.y, 1, w1, null, null);
+			w2 = wallCells[wallCells.length-1];
+		}
         return null;
     }
 
