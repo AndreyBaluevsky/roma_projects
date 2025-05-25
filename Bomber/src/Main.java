@@ -34,7 +34,7 @@ public class Main {
 
         public GameRunner(String title) { super(title); Main.activeGamePlay = this; }
 
-        public int frameRateRel = 8;
+        public int frameRateRel = 80;
         public int frameRateRelCur = 0;
 
         @Override        
@@ -52,6 +52,9 @@ public class Main {
                 final ArrayList<GameCharacter.Bomb> bombsList = gb.bombsList;
                 for (int i = bombsList.size()-1; i >= 0; i--) {
                     bombsList.get(i).timeTick();
+                }
+                if(robotsList.size()==0) {
+                    gb.setCellsXY(gb.TeleportX, gb.TeleportY, new BitmapCell("pic_v2"));
                 }
                 frameRateRelCur = 0;
             } else {

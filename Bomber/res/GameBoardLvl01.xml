@@ -2,7 +2,7 @@
 <GameBoard Rows="30" Cols="30">
     <Bomber X="17" Y="14" />
     <Robot Type="Wanderer" X="15"  Y="27" />
-    <Bomb	X="19" Y="16" />
+    <Bomb TimeOut="20" X="19" Y="16" />
     <Robot Type="Robot2" X="4"      Y="8"  />
     <Robot Type="Robot2" X="17"     Y="6"  />
     <Robot Type="Robot2" X="19"     Y="12"  />

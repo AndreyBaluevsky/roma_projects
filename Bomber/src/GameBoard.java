@@ -38,6 +38,8 @@ implements IDrawable {
 
     private Cell defaultCell = new EmptyCell();
 
+    public int TeleportX, TeleportY;
+
     public GameBoard(int cellRows, int cellColumns) throws Exception {
         this.cellRows = cellRows;
         this.cellColumns = cellColumns;
@@ -106,7 +108,11 @@ implements IDrawable {
             final int x = getInt(lmBmp, "X");
             final int y = getInt(lmBmp, "Y");
             final String id = lmBmp.getAttribute("Id");
-            setCellsXY(x, y, new BitmapCell(id));
+            if(nListBmp.getLength()==1) {
+                TeleportX = x; TeleportY = y;
+            } else {
+                setCellsXY(x, y, new BitmapCell(id));
+            }
         }
 
         NodeList nListRobot = docElem.getElementsByTagName("Robot");
