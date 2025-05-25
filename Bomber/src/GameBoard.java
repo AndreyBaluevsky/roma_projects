@@ -157,7 +157,7 @@ implements IDrawable {
         return (GameCharacter.Robot)ctor.newInstance(new Object[] {this, x, y });
     }
 
-    private Element loadXml(String filePath) throws ParserConfigurationException, SAXException, IOException {
+    private Element loadXml(String filePath) throws ParserConfigurationException, SAXException, IOException, LevelNotFoundException {
         // System.out.println("Calling loadXml ...");
         File fXmlFile = new File(filePath);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -169,6 +169,8 @@ implements IDrawable {
             final String fileName = fXmlFile.getName();
             // System.out.println("loadXml: try reading with getResourceAsStream: "+fileName);
             InputStream resStream = Main.class.getClassLoader().getResourceAsStream(fileName);
+            if(resStream==null)
+                throw new LevelNotFoundException();
             doc = dBuilder.parse(resStream);
         }
         final Element docElem = doc.getDocumentElement();

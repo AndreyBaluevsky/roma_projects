@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameBoard Rows="30" Cols="30">
+	<Bomber X="13" Y="14" />
+	<Bitmap X="24" Y="11" Id="pic_v2" />
+	<Robot Type="LoopWalker1" X="12"  Y="15" />
+	<Robot Type="LoopWalker2" X="15"  Y="10" />
+	
+    <WallH StartX="1" StartY="25" Count="4"/>
+    <WallH StartX="1" StartY="23" Count="2"/>
+    <WallH StartX="2" StartY="22" Count="1"/>
+    <WallH StartX="6" StartY="28" Count="3"/>
+    <WallH StartX="4" StartY="23" Count="2"/>
+    <WallV StartX="6" StartY="24" Count="2"/>
+    <WallV StartX="11" StartY="26" Count="3"/>
+    <WallH StartX="16" StartY="28" Count="4"/>
+    <WallV StartX="21" StartY="27" Count="2"/>
+    <WallH StartX="26" StartY="28" Count="3"/>
+    <WallH StartX="11" StartY="23" Count="3"/>
+    <WallH StartX="13" StartY="24" Count="2"/>
+    <WallH StartX="15" StartY="25" Count="2"/>
+    <WallV StartX="18" StartY="23" Count="3"/>
+    <WallV StartX="16" StartY="21" Count="3"/>
+    <WallV StartX="21" StartY="21" Count="3"/>
+    <WallV StartX="26" StartY="20" Count="4"/>
+    <WallH StartX="5" StartY="21" Count="5"/>
+    <WallV StartX="8" StartY="18" Count="3"/>
+    <WallH StartX="1" StartY="18" Count="6"/>
+    <WallV StartX="6" StartY="15" Count="3"/>
+    <WallH StartX="11" StartY="18" Count="5"/>
+    <WallV StartX="15" StartY="16" Count="2"/>
+    <WallH StartX="16" StartY="16" Count="4"/>
+    <WallV StartX="19" StartY="17" Count="2"/>
+    <WallH StartX="18" StartY="18" Count="1"/>
+    <WallV StartX="21" StartY="16" Count="3"/>
+    <WallH StartX="22" StartY="18" Count="2"/>
+    <WallH StartX="26" StartY="18" Count="3"/>
+    <WallH StartX="23" StartY="16" Count="5"/>
+    <WallH StartX="27" StartY="15" Count="1"/>
+    <WallH StartX="21" StartY="13" Count="7"/>
+    <WallH StartX="25" StartY="11" Count="3"/>
+    <WallH StartX="22" StartY="11" Count="2"/>
+    <WallH StartX="24" StartY="10" Count="1"/>
+    <WallV StartX="19" StartY="11" Count="3"/>
+    <WallH StartX="18" StartY="11" Count="1"/>
+    <WallV StartX="16" StartY="8" Count="6"/>
+    <WallH StartX="17" StartY="8" Count="10"/>
+    <WallV StartX="26" StartY="6" Count="2"/>
+    <WallV StartX="24" StartY="3" Count="4"/>
+    <WallV StartX="22" StartY="2" Count="4"/>
+    <WallV StartX="1" StartY="10" Count="4"/>
+    <WallV StartX="6" StartY="11" Count="3"/>
+    <WallH StartX="7" StartY="13" Count="2"/>
+    <WallV StartX="11" StartY="10" Count="4"/>
+    <WallH StartX="13" StartY="5" Count="5"/>
+    <WallV StartX="17" StartY="2" Count="3"/>
+    <WallV StartX="11" StartY="3" Count="6"/>
+    <WallV StartX="8" StartY="5" Count="3"/>
+    <WallH StartX="6" StartY="2" Count="5"/>
+    <WallV StartX="1" StartY="5" Count="4"/>
+    <WallH StartX="1" StartY="3" Count="3"/>
+</GameBoard>

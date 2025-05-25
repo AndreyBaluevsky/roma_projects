@@ -9,13 +9,22 @@ public class Main {
     public static GameRunner activeGamePlay;
 
     public static class GameRunner extends Graphics {
-        public static GameBoard gb = createGameBoard();
-
-        private static GameBoard createGameBoard() {
+        public static int currentLevel = 1;
+        public static GameBoard gb = createGameBoard(currentLevel);
+        public void goNextLevel() throws Exception {
+            currentLevel += 1;
+            gb = createGameBoard(currentLevel);
+            if(gb==null) youWin();
+        }
+        public static GameBoard createGameBoard(int currentLevel) {
 //            final GameBoard gameBoard = new GameBoard(20, 20);
             GameBoard gameBoard = null;
             try {
-                gameBoard = new GameBoard("Bomber\\res\\GameBoard.xml");
+                // GameBoardLvl01.xml
+                String gbPath = String.format("Bomber\\res\\GameBoardLvl%02d.xml", currentLevel);
+                gameBoard = new GameBoard(gbPath);
+            } catch (LevelNotFoundException e) {
+                return null;
             } catch (Exception e) {
                 //throw new RuntimeException(e);
                 System.out.println(e.toString());
@@ -59,7 +68,7 @@ public class Main {
 			testKeys();
 			gb = new GameBoard("Bomber\\res\\GameBoard_YouWin.xml");
 		}
-		
+
         private GLFWKeyCallback keyCallback;
 
         @Override

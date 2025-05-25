@@ -263,7 +263,7 @@ public abstract class GameCharacter {
 		public boolean teleport(int fromX, int fromY) {
 			//переход к следующему уровню или к игровому полю "GameBoard_YouWin.xml"
             try {
-                Main.activeGamePlay.youWin();
+                Main.activeGamePlay.goNextLevel();
             } catch (Exception e) {
                 e.printStackTrace();
             }
